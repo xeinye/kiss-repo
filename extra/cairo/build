@@ -1,0 +1,15 @@
+#!/bin/sh -e
+
+export DESTDIR="$1"
+
+meson setup \
+    -Dprefix=/usr \
+    -Dtee=enabled \
+    -Dxcb=disabled \
+    -Dxlib=disabled \
+    -Dxlib-xcb=disabled \
+    -Dtests=disabled \
+    output
+
+ninja -C output
+ninja -C output install

@@ -1,0 +1,23 @@
+#!/bin/sh -e
+
+# Swap to shell script instead of perl script
+# for conversion of rules files. See files/xml2lst.
+sed 's/xml2lst\.pl/xml2lst/' rules/meson.build > _
+mv -f _ rules/meson.build
+
+# Remove po/ dir.
+sed "/subdir('po')/d" meson.build > _
+mv -f _ meson.build
+
+export DESTDIR="$1"
+
+meson setup \
+    -Dprefix=/usr \
+    output
+
+ninja -C output
+ninja -C output install
+
+rm "$1/usr/share/X11/xkb/"
+mv "$1/usr/share/xkeyboard-config-2/" "$1/usr/share/X11/xkb/"
+ln -s X11/xkb "$1/usr/share/xkeyboard-config-2"

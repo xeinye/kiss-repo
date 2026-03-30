@@ -1,0 +1,14 @@
+#!/bin/sh -e
+
+./configure \
+    --prefix=/usr \
+    --disable-doxygen-docs \
+    --disable-xmms-plugin \
+    --disable-cpplibs \
+    --disable-oggtest \
+    --disable-examples \
+    --disable-rpath \
+    --with-pic
+
+make
+make DESTDIR="$1" install

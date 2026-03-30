@@ -1,0 +1,6 @@
+libpng
+meson make
+pixman
+pkgconf make
+wayland
+wayland-protocols make

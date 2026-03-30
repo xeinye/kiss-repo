@@ -1,0 +1,13 @@
+#!/bin/sh -e
+
+export CFLAGS="$CFLAGS -std=c17"
+
+./configure \
+    --prefix=/usr \
+    --localstatedir=/var/state/gmp \
+    --enable-cxx \
+    --enable-fat \
+    --with-pic
+
+make
+make DESTDIR="$1" install

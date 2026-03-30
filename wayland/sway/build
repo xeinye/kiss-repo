@@ -1,0 +1,16 @@
+#!/bin/sh -e
+
+export CFLAGS="$CFLAGS -Wno-error=switch"
+
+export DESTDIR="$1"
+
+meson setup \
+    -Dprefix=/usr \
+    -Ddefault-wallpaper=false \
+    -Dzsh-completions=false \
+    -Dbash-completions=false \
+    -Dfish-completions=false \
+    build
+
+ninja -C build
+ninja -C build install
