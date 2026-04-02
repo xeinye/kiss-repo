@@ -1,8 +1,0 @@
-#!/bin/sh -e
-
-cargo build \
-  --locked \
-  --release \
-  --no-default-features
-
-install -Dm755 target/release/niri "$1/usr/bin/niri"
