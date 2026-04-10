@@ -1,0 +1,14 @@
+#!/bin/sh -e
+
+export DESTDIR="$1"
+
+patch -p1 < busybox.patch
+
+mkdir -p build
+cd build
+
+meson .. --prefix=/usr \
+         -Dstrip=true
+
+ninja
+ninja install
