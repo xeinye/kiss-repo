@@ -8,9 +8,9 @@ patch -p1 < no-fribidi.patch
 # during the build. This cannot be turned off otherwise.
 rm -rf subprojects
 
-: > tests/muon.build
-: > examples/muon.build
-: > docs/muon.build
+: > tests/meson.build
+: > examples/meson.build
+: > docs/meson.build
 
 muon setup \
     -Dprefix=/usr \

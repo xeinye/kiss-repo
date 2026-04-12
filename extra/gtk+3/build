@@ -10,8 +10,8 @@ done
 sed -e '/compile_schemas/s/true/false/' \
     -e '/ENABLE_NLS/s/1/0/' \
     -e "/subdir('po/d" \
-    muon.build > _
-mv -f _ muon.build
+    meson.build > _
+mv -f _ meson.build
 
 muon setup \
     -Dprefix=/usr \

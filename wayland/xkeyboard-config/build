@@ -2,12 +2,12 @@
 
 # Swap to shell script instead of perl script
 # for conversion of rules files. See files/xml2lst.
-sed 's/xml2lst\.pl/xml2lst/' rules/muon.build > _
-mv -f _ rules/muon.build
+sed 's/xml2lst\.pl/xml2lst/' rules/meson.build > _
+mv -f _ rules/meson.build
 
 # Remove po/ dir.
-sed "/subdir('po')/d" muon.build > _
-mv -f _ muon.build
+sed "/subdir('po')/d" meson.build > _
+mv -f _ meson.build
 
 export DESTDIR="$1"
 

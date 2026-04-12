@@ -2,7 +2,7 @@
 
 export DESTDIR="$1"
 
-: > fuzzing/muon.build
+: > fuzzing/meson.build
 
 muon setup \
     -Dprefix=/usr \
