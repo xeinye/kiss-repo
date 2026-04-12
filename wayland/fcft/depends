@@ -1,6 +1,6 @@
 fontconfig
 freetype-harfbuzz
-meson   make
+muon   make
 pixman
 pkgconf make
 tllist  make

@@ -5,7 +5,7 @@ export DESTDIR="$1"
 build_freetype() (
     cd freetype
 
-    meson setup \
+    muon setup \
         -Dprefix=/usr \
         -Ddefault_library=both \
         -Dbzip2=disabled \
@@ -20,7 +20,7 @@ build_freetype() (
 build_harfbuzz() (
     cd harfbuzz
 
-    meson setup \
+    muon setup \
         -Dprefix=/usr \
         -Ddefault_library=both \
         -Dglib=disabled \

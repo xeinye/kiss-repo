@@ -1,7 +1,7 @@
 fcft
 fontconfig
 libxkbcommon
-meson   make
+muon   make
 ncurses make
 pixman
 pkgconf make

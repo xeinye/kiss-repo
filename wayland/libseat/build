@@ -5,7 +5,7 @@
 export CFLAGS="-Wno-error $CFLAGS"
 export DESTDIR="$1"
 
-meson setup \
+muon setup \
     -Dprefix=/usr \
     -Ddefault_library=both \
     build

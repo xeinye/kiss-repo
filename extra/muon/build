@@ -1,0 +1,47 @@
+#!/bin/sh -e
+
+# Set -Ddefault_library=both by default.
+sed "/value: /s/'static'/'both'/" src/script/options/per_project.muon > _
+mv -f _ src/script/options/per_project.muon
+
+# workaround static build
+sed '/MUON_STATIC/d' muon.build > _
+mv -f _ muon.build
+
+./bootstrap.sh build-stage1
+
+# Stage 2: muon do bootstrap
+build-stage1/muon-bootstrap setup \
+    -Dlibarchive=disabled \
+    -Dlibcurl=disabled \
+    -Dlibpkgconf=enabled \
+    -Dman-pages=disabled \
+    -Dmeson-docs=disabled \
+    -Dmeson-tests=disabled \
+    -Dreadline=builtin \
+    -Dsamurai=disabled \
+    -Dtracy=disabled \
+    -Dui=disabled \
+    -Dwebsite=disabled \
+    build-stage2
+ninja -C build-stage2
+
+# Stage 3: muon final
+build-stage2/muon setup \
+    -Dlibarchive=disabled \
+    -Dlibcurl=disabled \
+    -Dlibpkgconf=enabled \
+    -Dman-pages=disabled \
+    -Dmeson-docs=disabled \
+    -Dmeson-tests=disabled \
+    -Dreadline=builtin \
+    -Dsamurai=disabled \
+    -Dtracy=disabled \
+    -Dui=disabled \
+    -Dwebsite=disabled \
+    -Dprefix=/usr \
+    build
+ninja -C build
+
+DESTDIR="$1" build/muon -C build install
+ln -sf /usr/bin/muon "$1/usr/bin/meson"

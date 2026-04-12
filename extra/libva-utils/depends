@@ -1,6 +1,6 @@
 libva
 mesa    make
-meson   make
+muon   make
 pkgconf make
 wayland
 wayland-protocols make

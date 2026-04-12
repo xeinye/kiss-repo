@@ -5,7 +5,7 @@ libplacebo
 libxkbcommon
 linux-headers make
 mesa
-meson   make
+muon   make
 pkgconf make
 python-docutils  make
 wayland

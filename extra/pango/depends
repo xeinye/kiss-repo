@@ -2,5 +2,5 @@ cairo
 fontconfig
 freetype-harfbuzz
 glib
-meson   make
+muon   make
 pkgconf make

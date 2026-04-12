@@ -8,7 +8,7 @@ export CFLAGS="$CFLAGS -fPIC"
 # the below CFLAGS.
 export CFLAGS="-Wno-unused-command-line-argument $CFLAGS"
 
-meson setup \
+muon setup \
     -Dprefix=/usr \
     -Dsysconfdir=/etc \
     -Dmandir=/usr/share/man \

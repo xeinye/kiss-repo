@@ -7,7 +7,7 @@ patch -p1 < busybox.patch
 mkdir -p build
 cd build
 
-meson .. --prefix=/usr \
+muon .. --prefix=/usr \
          -Dstrip=true
 
 ninja

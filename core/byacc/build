@@ -10,6 +10,7 @@ make DESTDIR="$1" install
 
 # Symlink to yacc
 ln -s byacc "$1/usr/bin/yacc"
+ln -s byacc "$1/usr/bin/bison"
 
 # Install the license
 install -Dm755 LICENSE "$1/usr/share/LICENSES/byacc.license"

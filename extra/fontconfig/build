@@ -4,7 +4,7 @@ patch -p1 < no-gperf.patch
 
 export DESTDIR="$1"
 
-meson setup \
+muon setup \
     -Dprefix=/usr \
     -Dxml-dir=/etc/fonts \
     -Ddoc=disabled \

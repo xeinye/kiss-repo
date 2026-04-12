@@ -1,6 +1,6 @@
 cairo       
 gdk-pixbuf
-meson make       
+muon make       
 pkgconf make
 samurai make     
 wayland          

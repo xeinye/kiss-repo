@@ -4,7 +4,7 @@ export CFLAGS="$CFLAGS -Wno-error=switch"
 
 export DESTDIR="$1"
 
-meson setup \
+muon setup \
     -Dprefix=/usr \
     -Ddefault-wallpaper=false \
     -Dzsh-completions=false \

@@ -7,7 +7,7 @@ libelf
 libva
 linux-headers make
 m4 make
-meson make
+muon make
 pkgconf make
 python-mako make
 python-yaml make

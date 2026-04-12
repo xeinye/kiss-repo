@@ -1,6 +1,6 @@
 expat
 fontconfig
 freetype-harfbuzz
-meson   make
+muon   make
 nasm    make
 pkgconf make

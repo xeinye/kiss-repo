@@ -1,10 +1,10 @@
 #!/bin/sh -e
 
-: > completions/meson.build
+: > completions/muon.build
 
 export DESTDIR="$1"
 
-meson \
+muon \
     --prefix=/usr \
     --buildtype=release \
     . output

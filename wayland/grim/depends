@@ -1,5 +1,5 @@
 libpng
-meson make
+muon make
 pixman
 pkgconf make
 wayland

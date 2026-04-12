@@ -22,7 +22,7 @@ esac
 mkdir -p bld/release
 cd bld/release
 
-meson setup \
+muon setup \
     -Dprefix=/usr \
     -Dbuildtype=release \
     -Dime=false \
@@ -31,7 +31,7 @@ meson setup \
 
 # Generate PGO data.
 {
-    meson configure \
+    muon configure \
         -Db_pgo=generate
 
     ninja
@@ -67,7 +67,7 @@ case $("$CC" --version) in *clang*)
     llvm-profdata merge default_*profraw --output=default.profdata
 esac
 
-meson configure -Db_pgo=use
+muon configure -Db_pgo=use
 
 ninja
 ninja install

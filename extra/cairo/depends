@@ -2,7 +2,7 @@ fontconfig
 freetype-harfbuzz
 glib
 libpng
-meson   make
+muon   make
 pixman
 pkgconf make
 zlib
