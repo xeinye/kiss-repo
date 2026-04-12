@@ -1,0 +1,4 @@
+https://github.com/llvm/llvm-project/archive/llvmorg-21.1.8.tar.gz
+patches/musl-stack-size.patch
+patches/no-libatomic.patch
+files/c99

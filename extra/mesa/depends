@@ -15,4 +15,4 @@ python-setuptools make
 spirv-llvm-translator make
 wayland
 wayland-protocols make
-zlib
+zlib-ng

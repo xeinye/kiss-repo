@@ -2,7 +2,6 @@ alsa-lib
 bzip2
 cairo
 cbindgen      make
-clang         make
 expat
 ffmpeg
 fontconfig
@@ -31,4 +30,4 @@ python-mako   make
 rust          make
 wayland
 wayland-protocols make
-zlib
+zlib-ng

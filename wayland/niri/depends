@@ -1,6 +1,6 @@
 cairo
-clang make
 glib
+llvm make
 libdisplay-info
 libinput
 libseat

@@ -1,4 +1,4 @@
 cyrus-sasl
 ncurses
 openssl
-zlib
+zlib-ng
