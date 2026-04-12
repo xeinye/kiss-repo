@@ -4,6 +4,7 @@ export CFLAGS="$CFLAGS -fPIC"
 export LDFLAGS="$LDFLAGS -Wl,--undefined-version"
 
 ./configure \
+    --zlib-compat \
     --prefix=/usr
 
 make
