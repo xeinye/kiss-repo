@@ -1,116 +1,91 @@
 #!/bin/sh -e
 
-sed 's/set(COMPILER_RT_HAS_SANITIZER_COMMON TRUE)/set(COMPILER_RT_HAS_SANITIZER_COMMON FALSE)/' compiler-rt/cmake/config-ix.cmake > _
+sed 's/set(COMPILER_RT_HAS_SANITIZER_COMMON TRUE)/set(COMPILER_RT_HAS_SANITIZER_COMMON FALSE)/' \
+    compiler-rt/cmake/config-ix.cmake > _
 mv -f _ compiler-rt/cmake/config-ix.cmake
 
 export DESTDIR="$1"
 
 for p in *.patch; do
-    patch -p1 < "$p"
+    [ -f "$p" ] && patch -p1 < "$p"
 done
-#    -DLLVM_ENABLE_LLD=ON \
 
-cmake -B build \
+cmake -B build -G Ninja -Wno-dev llvm \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DCMAKE_BUILD_TYPE=Release \
-    -DCOMPILER_RT_INSTALL_PATH="/usr/lib/clang/$2" \
-    -DLLVM_ENABLE_PER_TARGET_RUNTIME_DIR=OFF \
-    -DLLVM_BUILD_LLVM_DYLIB=ON \
-    -DLLVM_LINK_LLVM_DYLIB=ON \
+    -DCMAKE_C_COMPILER=clang \
+    -DCMAKE_CXX_COMPILER=clang++ \
+    -DLLVM_USE_LINKER=lld \
+    -DLLVM_ENABLE_LLD=ON \
     -DLLVM_PARALLEL_TABLEGEN_JOBS="$(($(nproc)/4))" \
     -DLLVM_ENABLE_PROJECTS="clang;clang-tools-extra;lld" \
     -DLLVM_ENABLE_RUNTIMES="compiler-rt;libunwind;libcxxabi;libcxx" \
-    -DLLVM_ENABLE_RTTI=ON \
-    -DLLVM_ENABLE_EH=ON \
+    -DLLVM_BUILD_LLVM_DYLIB=ON \
+    -DLLVM_LINK_LLVM_DYLIB=ON \
+    -DLLVM_ENABLE_PER_TARGET_RUNTIME_DIR=OFF \
+    -DCOMPILER_RT_INSTALL_PATH="/usr/lib/clang/$2" \
     -DLLVM_HOST_TRIPLE="$(clang -dumpmachine)" \
+    -DLLVM_ENABLE_LIBCXX=ON \
+    -DCLANG_DEFAULT_CXX_STDLIB=libc++ \
+    -DCLANG_DEFAULT_RTLIB=compiler-rt \
+    -DCLANG_DEFAULT_UNWINDLIB=libunwind \
+    -DLIBCXX_HAS_MUSL_LIBC=ON \
+    -DLIBCXX_USE_COMPILER_RT=ON \
+    -DLIBCXX_ENABLE_STATIC_ABI_LIBRARY=ON \
+    -DLIBCXX_STATICALLY_LINK_ABI_IN_SHARED_LIBRARY=ON \
+    -DLIBCXXABI_USE_LLVM_UNWINDER=ON \
+    -DLIBCXXABI_USE_COMPILER_RT=ON \
+    -DLIBCXXABI_ENABLE_STATIC_UNWINDER=ON \
+    -DLIBCXXABI_STATICALLY_LINK_UNWINDER_IN_SHARED_LIBRARY=ON \
+    -DLIBCXXABI_ENABLE_SHARED=ON \
+    -DLIBUNWIND_USE_COMPILER_RT=ON \
+    -DLIBUNWIND_ENABLE_ASSERTIONS=OFF \
+    -DCOMPILER_RT_USE_BUILTINS_LIBRARY=ON \
+    -DCOMPILER_RT_BUILD_GWP_ASAN=OFF \
+    -DCOMPILER_RT_BUILD_ORC=OFF \
+    -DCOMPILER_RT_BUILD_XRAY=OFF \
     -DLLVM_INCLUDE_BENCHMARKS=OFF \
     -DLLVM_INCLUDE_EXAMPLES=OFF \
     -DLLVM_INCLUDE_DOCS=OFF \
     -DLLVM_INCLUDE_TESTS=OFF \
     -DLLVM_ENABLE_LIBXML2=OFF \
-    -DLLVM_ENABLE_LIBCXX=ON \
-    -DLLVM_INSTALL_BINUTILS_SYMLINKS=ON \
-    -DLIBUNWIND_ENABLE_ASSERTIONS=OFF \
-    -DLIBUNWIND_USE_COMPILER_RT=ON \
-    -DLIBCXXABI_USE_LLVM_UNWINDER=ON \
-    -DLIBCXXABI_USE_COMPILER_RT=ON \
-    -DLIBCXXABI_ENABLE_STATIC_UNWINDER=ON \
-    -DLIBCXXABI_STATICALLY_LINK_UNWINDER_IN_SHARED_LIBRARY=ON \
-    -DLIBCXXABI_ENABLE_SHARED=OFF \
-    -DLIBCXX_CXX_ABI=libcxxabi \
-    -DLIBCXX_USE_COMPILER_RT=ON \
-    -DLIBCXX_HAS_MUSL_LIBC=ON \
-    -DLIBCXX_ENABLE_STATIC_ABI_LIBRARY=ON \
-    -DLIBCXX_STATICALLY_LINK_ABI_IN_SHARED_LIBRARY=ON \
-    -DLIBCXX_STATICALLY_LINK_ABI_IN_STATIC_LIBRARY=ON \
-    -DCOMPILER_RT_BUILD_GWP_ASAN=OFF \
-    -DCOMPILER_RT_USE_BUILTINS_LIBRARY=ON \
-    -DCOMPILER_RT_USE_ATOMIC_LIBRARY=ON \
-    -DCOMPILER_RT_EXCLUDE_ATOMIC_BUILTIN=OFF \
-    -DCOMPILER_RT_LIBATOMIC_USE_PTHREAD=ON \
-    -DCLANG_DEFAULT_CXX_STDLIB=libc++ \
-    -DCLANG_DEFAULT_RTLIB=compiler-rt \
-    -G Ninja -Wno-dev llvm
+    -DLLVM_INSTALL_BINUTILS_SYMLINKS=ON
 
-cmake --build   build
+cmake --build build -- -j "$(nproc)"
 cmake --install build
 
-# libc++abi header files
-mkdir -p "$1/usr"
-cp -r libcxxabi/include "$1/usr"
+mkdir -p "$1/usr/include"
+cp -r libcxxabi/include/* "$1/usr/include/" 2>/dev/null || true
 
-# Provide lld as an alternative to ld.
-ln -s lld "$1/usr/bin/ld"
-
-# Clang: Some legacy programs may require cc
-ln -s clang "$1/usr/bin/cc"
-
-# Clang: equivalent for c++
-ln -s clang++ "$1/usr/bin/c++"
-
-# Clang: equivalent for cpp
-ln -s clang-cpp "$1/usr/bin/cpp"
-
+ln -sf lld "$1/usr/bin/ld"
+ln -sf clang "$1/usr/bin/cc"
+ln -sf clang++ "$1/usr/bin/c++"
+ln -sf clang-cpp "$1/usr/bin/cpp"
 ln -sf llvm-as "$1/usr/bin/as"
 
-# Clang: POSIX compliance
-cp -f c99 "$1/usr/bin/c99"
+# POSIX compliance
+cp -f c99 "$1/usr/bin/c99" 2>/dev/null || true
 
-# Fix up libexec location. This can't be done during
-# the configure stage of the build as it is hardcoded.
-{
-    mv -f \
-        "$1/usr/libexec/"*analyze* \
-        "$1/usr/libexec/"*intercept* \
-        "$1/usr/lib/clang"
+if [ -d "$1/usr/libexec" ]; then
+    mv -f "$1/usr/libexec/"*analyze* "$1/usr/libexec/"*intercept* "$1/usr/lib/clang/" 2>/dev/null || true
+    rmdir "$1/usr/libexec" 2>/dev/null || true
+fi
 
-    rmdir "$1/usr/libexec"
-
-    sed 's|libexec|lib/clang|' "$1/usr/bin/scan-build" > _
-    mv -f _ "$1/usr/bin/scan-build"
-    chmod +x "$1/usr/bin/scan-build"
-}
-
-# Use new llvm-config to generate a pkg-config file.
-PATH="$1/usr/bin:$PATH"
+# Cria pkg-config limpo (sem -lstdc++)
 mkdir -p "$1/usr/lib/pkgconfig"
+PATH="$1/usr/bin:$PATH" llvm-config --version >/dev/null 2>&1 || true
 
-# shellcheck disable=2016
-sed -e "s|$1||" -e 's|/usr/include|\${includedir}|' \
-    > "$1/usr/lib/pkgconfig/llvm.pc" <<EOF
+cat > "$1/usr/lib/pkgconfig/llvm.pc" <<EOF
 prefix=/usr
 exec_prefix=\${prefix}
 libdir=\${exec_prefix}/lib
 includedir=\${prefix}/include
-has_rtti=$(llvm-config --has-rtti)
+
 Name: LLVM
 Description: LLVM compiler infrastructure
 URL: https://llvm.org
-Version: $(llvm-config --version)
+Version: $(llvm-config --version 2>/dev/null || echo "$2")
 Requires:
-Requires.private: zlib
-Libs: -L\${libdir} $(llvm-config --libs)
-Libs.private: -lstdc++ $(llvm-config --libs --link-static)
-Cflags: $(llvm-config --cflags)
+Libs: -L\${libdir} $(llvm-config --libs 2>/dev/null || echo "-lLLVM")
+Cflags: $(llvm-config --cflags 2>/dev/null || echo "")
 EOF
-
