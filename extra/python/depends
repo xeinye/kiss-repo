@@ -4,4 +4,4 @@ libffi
 ncurses
 openssl
 sqlite
-zlib-ng
+zlib

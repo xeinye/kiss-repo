@@ -30,4 +30,4 @@ python-mako   make
 rust          make
 wayland
 wayland-protocols make
-zlib-ng
+zlib

@@ -1,2 +1,2 @@
 curl    make
-zlib-ng    make
+zlib    make

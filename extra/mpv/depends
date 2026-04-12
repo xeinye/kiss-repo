@@ -10,4 +10,4 @@ pkgconf make
 python-docutils  make
 wayland
 wayland-protocols make
-zlib-ng
+zlib

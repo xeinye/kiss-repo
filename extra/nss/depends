@@ -1,4 +1,4 @@
 linux-headers make
 nspr
 sqlite
-zlib-ng
+zlib
