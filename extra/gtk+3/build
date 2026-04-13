@@ -6,6 +6,9 @@ for p in *.patch; do
     patch -p1 < "$p"
 done
 
+sed -i "s/value: 'false'/value: false/g; s/value: 'true'/value: true/g" meson_options.txt
+sed -i 's/link_whole: gdk_backends,/link_with: gdk_backends,/' gdk/meson.build
+
 # Don't enable native language support and don't compile schemas.
 sed -e '/compile_schemas/s/true/false/' \
     -e '/ENABLE_NLS/s/1/0/' \
@@ -26,7 +29,7 @@ muon setup \
     output
 
 ninja -C output
-muon install -C output
+muon -C output install
 
 # We don't compile with librsvg which leads to this utility solely causing
 # compiler errors for some packages. It has no use at all.

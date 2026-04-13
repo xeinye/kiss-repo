@@ -1,12 +1,12 @@
 #!/bin/sh -e
 
 # Set -Ddefault_library=both by default.
-sed "/value: /s/'static'/'both'/" src/script/options/per_project.muon > _
-mv -f _ src/script/options/per_project.muon
+sed "/value: /s/'static'/'both'/" src/script/options/per_project.meson > _
+mv -f _ src/script/options/per_project.meson
 
 # workaround static build
-sed '/MUON_STATIC/d' muon.build > _
-mv -f _ muon.build
+sed '/MUON_STATIC/d' meson.build > _
+mv -f _ meson.build
 
 ./bootstrap.sh build-stage1
 
@@ -19,7 +19,7 @@ build-stage1/muon-bootstrap setup \
     -Dmeson-docs=disabled \
     -Dmeson-tests=disabled \
     -Dreadline=builtin \
-    -Dsamurai=disabled \
+    -Dsamurai=enabled \
     -Dtracy=disabled \
     -Dui=disabled \
     -Dwebsite=disabled \
@@ -35,7 +35,7 @@ build-stage2/muon setup \
     -Dmeson-docs=disabled \
     -Dmeson-tests=disabled \
     -Dreadline=builtin \
-    -Dsamurai=disabled \
+    -Dsamurai=samurai \
     -Dtracy=disabled \
     -Dui=disabled \
     -Dwebsite=disabled \

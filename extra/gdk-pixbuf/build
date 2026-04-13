@@ -1,5 +1,4 @@
 #!/bin/sh -e
-
 export DESTDIR="$1"
 
 muon setup \
@@ -15,8 +14,6 @@ muon setup \
     -Dman=false \
     -Dgio_sniffing=false \
     -Dtests=false \
-    -Dinstalled_tests=false \
-    -Dbuiltin_loaders=all \
     -Dwrap_mode=nofallback \
     output
 
