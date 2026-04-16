@@ -35,7 +35,7 @@ build-stage2/muon setup \
     -Dmeson-docs=disabled \
     -Dmeson-tests=disabled \
     -Dreadline=builtin \
-    -Dsamurai=samurai \
+    -Dsamurai=enabled \
     -Dtracy=disabled \
     -Dui=disabled \
     -Dwebsite=disabled \

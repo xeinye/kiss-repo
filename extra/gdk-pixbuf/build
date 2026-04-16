@@ -1,5 +1,4 @@
 #!/bin/sh -e
-export DESTDIR="$1"
 
 muon setup \
     -Dprefix=/usr \
@@ -14,8 +13,10 @@ muon setup \
     -Dman=false \
     -Dgio_sniffing=false \
     -Dtests=false \
+    -Dinstalled_tests=false \
+    -Dbuiltin_loaders=all \
     -Dwrap_mode=nofallback \
-    output
+    build
 
-ninja -C output
-ninja -C output install
+muon -C build samu
+muon -C build install
