@@ -4,7 +4,7 @@ patch -p1 < wl_drm-optional.patch
 
 export DESTDIR="$1"
 
-muon setup \
+meson setup \
     -Dprefix=/usr \
     output
 

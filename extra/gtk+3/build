@@ -16,7 +16,7 @@ sed -e '/compile_schemas/s/true/false/' \
     meson.build > _
 mv -f _ meson.build
 
-muon setup \
+meson setup \
     -Dprefix=/usr \
     -Dx11_backend=false \
     -Dwayland_backend=true \
@@ -29,7 +29,7 @@ muon setup \
     output
 
 ninja -C output
-muon -C output install
+meson -C output install
 
 # We don't compile with librsvg which leads to this utility solely causing
 # compiler errors for some packages. It has no use at all.

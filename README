@@ -12,3 +12,15 @@ More information:
 
     - https://kisslinux.github.io
     - https://kisslinux.github.io/package-system
+________________________________________________________________________________
+
+Software:
+
+- samurai instead of ninja
+- pigz instead of gzip
+- byacc instead of bison
+- llvm/clang instead of gcc/binutils
+
+/testing
+- muon instead of meson(experimental)
+  * Many packages broken

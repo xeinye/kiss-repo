@@ -1,8 +1,15 @@
 #!/bin/sh -e
 
+patch -p1 < byacc.patch
+
+sed -i "s/bison = find_program('bison', 'win_bison', required: true, version: '>= 3.6')/bison = find_program('bison', 'win_bison', required: true)/" meson.build
+sed -i '/^%define parse\.error detailed/d' src/xkbcomp/parser.y
+sed -i -E 's/^([[:space:]]+[A-Z_][A-Z_0-9]*[[:space:]]+[0-9]+)[[:space:]]+"[^"]*"[[:space:]]*$/\1/' src/xkbcomp/parser.y
+
+
 export DESTDIR="$1"
 
-muon setup \
+meson setup  --wrap-mode=nofallback \
     -Dprefix=/usr \
     -Dlibexecdir=/usr/lib \
     -Ddefault_library=both \

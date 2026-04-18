@@ -6,7 +6,7 @@ libseat
 libxkbcommon
 linux-headers make
 mesa
-muon make
+meson make
 pango
 pcre2
 pixman

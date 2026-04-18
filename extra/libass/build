@@ -4,7 +4,7 @@ export DESTDIR="$1"
 
 patch -p1 < no-fribidi.patch
 
-muon setup \
+meson setup \
     -Dprefix=/usr \
     -Dfontconfig=enabled \
     output

@@ -2,7 +2,7 @@
 export DESTDIR="$1"
 build_freetype() (
     cd freetype
-    muon setup \
+    meson setup \
         -Dprefix=/usr \
         -Ddefault_library=both \
         -Dbzip2=disabled \
@@ -10,11 +10,11 @@ build_freetype() (
         "$@" \
         output
     ninja -C output
-    muon -C output install
+    meson -C output install
 )
 build_harfbuzz() (
     cd harfbuzz
-    muon setup \
+    meson setup \
         -Dprefix=/usr \
         -Ddefault_library=both \
         -Dglib=disabled \
@@ -26,7 +26,7 @@ build_harfbuzz() (
         -Dtests=disabled \
         output
     ninja -C output
-    muon -C output install
+    meson -C output install
 )
 export CPPFLAGS="$CPPFLAGS -I$DESTDIR/usr/include/harfbuzz"
 export LDFLAGS="$LDFLAGS -L$DESTDIR/usr/lib"

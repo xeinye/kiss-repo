@@ -1,6 +1,17 @@
 #!/bin/sh -e
 
-muon setup \
+
+sed -i '/gen_thumbnailer = custom_target/,/^$/c\
+  gen_thumbnailer = custom_target(\x27thumbnailer\x27,\
+                                  output: \x27gdk-pixbuf-thumbnailer.thumbnailer\x27,\
+                                  input: \x27gdk-pixbuf-thumbnailer.thumbnailer.in\x27,\
+                                  build_by_default: false,\
+                                  command: [\x27echo\x27, \x27disabled\x27],\
+                                  )' gdk-pixbuf/meson.build
+
+sed -i 's/build_by_default: true/build_by_default: false/' gdk-pixbuf/meson.build
+
+meson setup  \
     -Dprefix=/usr \
     -Dsysconfdir=/etc \
     -Dmandir=/usr/share/man \
@@ -18,5 +29,5 @@ muon setup \
     -Dwrap_mode=nofallback \
     build
 
-muon -C build samu
-muon -C build install
+meson -C build samu -v
+meson -C build install

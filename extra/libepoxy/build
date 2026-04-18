@@ -2,7 +2,7 @@
 
 export DESTDIR="$1"
 
-muon setup \
+meson setup \
     -Dprefix=/usr \
     -Degl=yes \
     -Dtests=false \
@@ -11,4 +11,4 @@ muon setup \
     output
 
 ninja -C output
-muon install -C output
+meson install -C output

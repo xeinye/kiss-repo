@@ -1,0 +1,11 @@
+--- a/meson.build
++++ b/meson.build
+@@ -322,7 +322,7 @@
+ yacc_gen = generator(
+     bison,
+     output: ['@BASENAME@.c', '@BASENAME@.h'],
+-    arguments: ['--defines=@OUTPUT1@', '-o', '@OUTPUT0@', '-p', '_xkbcommon_', '@INPUT@'],
++    arguments: ['-d', '-o', '@OUTPUT0@', '-p', '_xkbcommon_', '@INPUT@'],
+ )
+ libxkbcommon_sources = [
+     'src/compose/constants.h',

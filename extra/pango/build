@@ -12,7 +12,7 @@ rm -rf subprojects
 : > examples/meson.build
 : > docs/meson.build
 
-muon setup \
+meson setup \
     -Dprefix=/usr \
     -Dgtk_doc=false \
     -Dxft=disabled \

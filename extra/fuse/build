@@ -2,7 +2,7 @@
 
 export DESTDIR="$1"
 
-muon \
+meson \
     --prefix=/usr \
     -Dexamples=false \
     -Dsbindir=bin \

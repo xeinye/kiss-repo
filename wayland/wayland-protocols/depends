@@ -1,2 +1,2 @@
-muon make
+meson make
 wayland make

@@ -1,6 +1,6 @@
 libjpeg-turbo
 libpng
-muon make
+meson make
 pixman
 tllist make
 wayland
