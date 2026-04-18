@@ -6,7 +6,8 @@ cd libclc
 cmake -B build \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DCMAKE_BUILD_TYPE=Release \
-    -DLIBCLC_TARGETS_TO_BUILD=''
+    -DLIBCLC_TARGETS_TO_BUILD="amdgcn--amdhsa" \
+    -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=lld -L/usr/lib -lLLVMCore -lLLVMBitWriter -lLLVMSupport -lLLVMOption -lc++abi"
 
-cmake --build   build
+cmake --build build
 cmake --install build

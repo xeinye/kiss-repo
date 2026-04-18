@@ -69,7 +69,6 @@ if [ -d "$1/usr/libexec" ]; then
     rmdir "$1/usr/libexec" 2>/dev/null || true
 fi
 
-# Cria pkg-config limpo (sem -lstdc++)
 mkdir -p "$1/usr/lib/pkgconfig"
 PATH="$1/usr/bin:$PATH" llvm-config --version >/dev/null 2>&1 || true
 

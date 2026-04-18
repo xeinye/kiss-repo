@@ -5,7 +5,8 @@ export DESTDIR="$1"
 cmake -B build \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DLLVM_EXTERNAL_SPIRV_HEADERS_SOURCE_DIR=/usr/include/spirv \
-    -DLLVM_SPIRV_INCLUDE_TESTS=OFF
+    -DLLVM_SPIRV_INCLUDE_TESTS=OFF \
+    -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=lld -lc++abi"
 
-cmake --build   build
+cmake --build build
 cmake --install build
