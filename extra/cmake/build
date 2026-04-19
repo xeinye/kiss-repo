@@ -1,9 +1,16 @@
 #!/bin/sh -e
 
+export CC=clang
+export CXX=clang++
+export CXXFLAGS="$CXXFLAGS -stdlib=libc++"
+export LDFLAGS="$LDFLAGS -stdlib=libc++ -lc++abi -fuse-ld=lld"
+
 if command -v cmake >/dev/null; then
     export DESTDIR="$1"
 
     cmake -B build \
+        -DCMAKE_C_COMPILER=clang \
+        -DCMAKE_CXX_COMPILER=clang++ \
         -DCMAKE_INSTALL_PREFIX=/usr \
         -DCMAKE_BUILD_TYPE=Release \
         -DCMAKE_USE_SYSTEM_CURL=True \

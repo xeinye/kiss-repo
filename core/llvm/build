@@ -1,10 +1,10 @@
 #!/bin/sh -e
+export DESTDIR="$1"
 
 sed 's/set(COMPILER_RT_HAS_SANITIZER_COMMON TRUE)/set(COMPILER_RT_HAS_SANITIZER_COMMON FALSE)/' \
     compiler-rt/cmake/config-ix.cmake > _
 mv -f _ compiler-rt/cmake/config-ix.cmake
 
-export DESTDIR="$1"
 
 for p in *.patch; do
     [ -f "$p" ] && patch -p1 < "$p"
@@ -15,6 +15,11 @@ cmake -B build -G Ninja -Wno-dev llvm \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_C_COMPILER=clang \
     -DCMAKE_CXX_COMPILER=clang++ \
+    -DCMAKE_C_FLAGS="-fPIC" \
+    -DCMAKE_CXX_FLAGS="-fPIC -stdlib=libc++" \
+    -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=lld -rtlib=compiler-rt -unwindlib=libunwind -stdlib=libc++" \
+    -DCMAKE_SHARED_LINKER_FLAGS="-fuse-ld=lld -rtlib=compiler-rt -unwindlib=libunwind -stdlib=libc++" \
+    -DCMAKE_MODULE_LINKER_FLAGS="-fuse-ld=lld -rtlib=compiler-rt -unwindlib=libunwind" \
     -DLLVM_PARALLEL_TABLEGEN_JOBS="$(($(nproc)/4))" \
     -DLLVM_ENABLE_PROJECTS="clang;clang-tools-extra;lld" \
     -DLLVM_ENABLE_RUNTIMES="compiler-rt;libunwind;libcxxabi;libcxx" \
@@ -61,7 +66,6 @@ ln -sf clang++ "$1/usr/bin/c++"
 ln -sf clang-cpp "$1/usr/bin/cpp"
 ln -sf llvm-as "$1/usr/bin/as"
 
-# POSIX compliance
 cp -f c99 "$1/usr/bin/c99" 2>/dev/null || true
 
 if [ -d "$1/usr/libexec" ]; then
@@ -70,7 +74,6 @@ if [ -d "$1/usr/libexec" ]; then
 fi
 
 mkdir -p "$1/usr/lib/pkgconfig"
-PATH="$1/usr/bin:$PATH" llvm-config --version >/dev/null 2>&1 || true
 
 cat > "$1/usr/lib/pkgconfig/llvm.pc" <<EOF
 prefix=/usr
@@ -81,8 +84,8 @@ includedir=\${prefix}/include
 Name: LLVM
 Description: LLVM compiler infrastructure
 URL: https://llvm.org
-Version: $(llvm-config --version 2>/dev/null || echo "$2")
+Version: $2
 Requires:
-Libs: -L\${libdir} $(llvm-config --libs 2>/dev/null || echo "-lLLVM")
-Cflags: $(llvm-config --cflags 2>/dev/null || echo "")
+Libs: -L\${libdir} -lLLVM
+Cflags: -I\${includedir}
 EOF

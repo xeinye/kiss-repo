@@ -19,6 +19,7 @@ meson setup \
     -Dvalgrind=false \
     -Dzstd=disabled \
     -Dglvnd="${glvnd_enabled:-true}" \
+    -Dcpp_rtti=false \
     -Dvideo-codecs=vc1dec,h264dec,h264enc,h265dec,h265enc \
     -Dvulkan-drivers='' \
     -Dcpp_link_args='-fuse-ld=lld -lc++abi' \
