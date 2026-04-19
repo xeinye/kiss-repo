@@ -5,6 +5,9 @@ sed 's/set(COMPILER_RT_HAS_SANITIZER_COMMON TRUE)/set(COMPILER_RT_HAS_SANITIZER_
     compiler-rt/cmake/config-ix.cmake > _
 mv -f _ compiler-rt/cmake/config-ix.cmake
 
+sed 's/lib64/lib/g' libcxxabi/cmake/cxx-abi-lib.cmake > _ 2>/dev/null || true
+sed 's/lib64/lib/g' libcxx/cmake/cxx-lib.cmake > _ 2>/dev/null || true
+sed 's/lib64/lib/g' compiler-rt/cmake/config-ix.cmake > _ 2>/dev/null || true
 
 for p in *.patch; do
     [ -f "$p" ] && patch -p1 < "$p"
