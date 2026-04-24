@@ -7,25 +7,30 @@ done
 sed '/UNZIP/d' toolkit/moz.configure > _
 mv -f _ toolkit/moz.configure
 
-sed 's/\("files":{\)[^}]*/\1/' third_party/rust/encoding_rs/.cargo-checksum.json > _
-	mv -f _ third_party/rust/encoding_rs/.cargo-checksum.json
+sed -i 's|^use core::simd::Select;|// use core::simd::Select; // commented: nightly-only, bug upstream|' \
+    third_party/rust/encoding_rs/src/x_user_defined.rs
 
-export CXXSTDLIB=c++
-export CFLAGS="$CFLAGS -fvisibility=hidden"
-export CXXFLAGS="$CXXFLAGS -fvisibility=hidden -fvisibility-inlines-hidden"
+sed -i 's|^#!\[cfg_attr(feature = "simd-accel", feature(core_intrinsics, portable_simd))\]|// &|' \
+    third_party/rust/encoding_rs/src/lib.rs
 
+find third_party/rust/encoding_rs/src -name '*.rs' -exec \
+    sed -i 's|feature = "simd-accel"|any()|g' {} \;
+
+sed 's/\("files":{\)[^}]*/\1/' \
+    third_party/rust/encoding_rs/.cargo-checksum.json > _
+mv -f _ third_party/rust/encoding_rs/.cargo-checksum.json
+
+
+# Workaround pra libc++ 22 + fmt (llvm issue #79027)
 : > config/gcc_hidden.h
 
-# Fix pid_t not defined on musl in libwebrtc
+# Fix pid_t não definido no musl em libwebrtc
 sed -i '1i #include <sys/types.h>' \
     third_party/libwebrtc/modules/desktop_capture/desktop_capturer.h
 
-# Instruct the compiler to trim absolute paths in resulting binaries and instead
-# change them to relative paths ($PWD/... ./...).
-export RUSTFLAGS="$RUSTFLAGS --remap-path-prefix=$PWD=."
-
-export LDFLAGS="$LDFLAGS -Wl,--no-as-needed"
-export RUSTFLAGS="$RUSTFLAGS -Cdebuginfo=0"
+export CXXSTDLIB=c++
+export RUSTFLAGS="$RUSTFLAGS --remap-path-prefix=$PWD=. -Cdebuginfo=0"
+export LDFLAGS="$LDFLAGS -Wl,-rpath=/usr/lib/firefox,--enable-new-dtags,--no-as-needed"
 export MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE=system
 export MOZ_DEBUG_FLAGS=-g0
 export MOZBUILD_STATE_PATH="$PWD/state"
@@ -37,7 +42,6 @@ ac_add_options --libdir=/usr/lib
 ac_add_options --enable-default-toolkit=cairo-gtk3-wayland-only
 ac_add_options --enable-strip
 ac_add_options --enable-release
-ac_add_options --enable-rust-simd
 ac_add_options --enable-audio-backends=alsa
 ac_add_options --enable-install-strip
 ac_add_options --enable-official-branding
@@ -53,6 +57,7 @@ ac_add_options --with-system-png
 ac_add_options --with-system-webp
 ac_add_options --with-system-zlib
 ac_add_options --without-wasm-sandboxed-libraries
+ac_add_options --disable-rust-simd
 ac_add_options --disable-eme
 ac_add_options --disable-dbus
 ac_add_options --disable-tests
@@ -71,43 +76,9 @@ ac_add_options --disable-parental-controls
 ac_add_options --disable-system-extension-dirs
 EOF
 
-sed -i "s/SharedLibrary('mozavutil')/Library('mozavutil')/" \
-    media/ffvpx/libavutil/moz.build
-
-sed -i "/SYMBOLS_FILE.*=.*'avutil.symbols'/d" \
-    media/ffvpx/libavutil/moz.build
-sed -i "/^NoVisibilityFlags()$/d" \
-    media/ffvpx/libavutil/moz.build
-sed -i "s/SharedLibrary('mozsqlite3')/Library('mozsqlite3')/" \
-    config/external/sqlite/moz.build
-sed -i "/^    'log2_tab\.c',\?$/d" media/ffvpx/libavcodec/moz.build
-sed -i "/^    'reverse\.c',\?$/d" media/ffvpx/libavcodec/moz.build
-sed -i "s/SharedLibrary('mozsqlite3')/Library('mozsqlite3')/" \
-    config/external/sqlite/moz.build
-sed -i "/SYMBOLS_FILE/d" config/external/sqlite/moz.build
-sed -i "/NoVisibilityFlags/d" config/external/sqlite/moz.build
-
-sed -i "s/SharedLibrary('mozsqlite3')/Library('mozsqlite3')/" \
-    security/nss/lib/sqlite/sqlite.gyp 2>/dev/null || true
-
-sed -i "s/SharedLibrary('opus')/Library('opus')/" \
-    media/libopus/moz.build
-sed -i "s/SharedLibrary('mozopus')/Library('mozopus')/" \
-    media/libopus/moz.build
-sed -i "/SYMBOLS_FILE/d" media/libopus/moz.build
-sed -i "/NoVisibilityFlags/d" media/libopus/moz.build
-sed -i '/DEFINES\["OPUS_EXPORT"\] = ""/d' media/libopus/moz.build
-sed -i "/SYMBOLS_FILE/d" config/external/gkcodecs/moz.build
-sed -i 's/GeckoSharedLibrary("gkcodecs")/Library("gkcodecs")/' \
-    config/external/gkcodecs/moz.build
-sed -i '/SYMBOLS_FILE = "gkcodecs.symbols"/d' \
-    config/external/gkcodecs/moz.build
-sed -i '/SHARED_LIBRARY_NAME = "gkcodecs"/d' \
-    config/external/gkcodecs/moz.build
 ./mach build "${MAKEFLAGS:-}"
 DESTDIR="$1" ./mach install
 
-# Remove a lot of uneeded "stuff".
 rm -rf \
     "$1/usr/include" \
     "$1/usr/lib/firefox-devel" \

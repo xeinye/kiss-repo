@@ -18,4 +18,3 @@ diff '--color=auto' -Naur a/media/ffvpx/ffvpxcommon.mozbuild b/media/ffvpx/ffvpx
          '-Wno-string-conversion',
          '-Wno-visibility',
      ]
-
