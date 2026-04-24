@@ -1,0 +1,36 @@
+name: Cleanup Stale Update Branches
+
+on:
+  schedule:
+    - cron: '0 3 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Delete update/* branches without open PRs
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+
+          git ls-remote --heads origin 'update/*' | while read -r sha ref; do
+            branch="${ref#refs/heads/}"
+
+            pr_count=$(gh pr list --state open --head "$branch" --json number --jq 'length')
+
+            if [ "$pr_count" = "0" ]; then
+              echo "Deleting $branch (no open PR)"
+              git push origin --delete "$branch" || true
+            else
+              echo "Keeping $branch (has open PR)"
+            fi
+          done
