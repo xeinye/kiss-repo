@@ -1,0 +1,15 @@
+name: Shellcheck
+
+on: [push, pull_request]
+
+jobs:
+  shellcheck:
+    name: Shellcheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Run Shellcheck.
+        run: |
+          shopt -s nullglob
+          find . -type f -name 'build' | xargs grep "^#!.*sh" | cut -d':' -f1 | xargs shellcheck
+          find . -type f -name 'post-install' | xargs grep "^#!.*sh" | cut -d':' -f1 | xargs shellcheck
