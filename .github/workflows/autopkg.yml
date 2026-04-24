@@ -2,9 +2,7 @@ name: KISS Auto Package Updater
 
 on:
   schedule:
-    # Runs every Sunday at midnight (UTC)
     - cron: '0 0 * * 0'
-  # Allows you to trigger this workflow manually from the Actions tab
   workflow_dispatch:
 
 permissions:
@@ -18,7 +16,6 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          # Fetch all history so we can branch cleanly
           fetch-depth: 0
 
       - name: Set up Git Configuration
@@ -35,40 +32,51 @@ jobs:
           sudo chmod +x /usr/local/bin/kiss-outdated /usr/local/bin/kiss
           echo "KISS environment ready."
 
+      - name: Build KISS_PATH from .kiss_auto
+        id: kisspath
+        run: |
+          [ -e ".kiss_auto" ] || { echo "No .kiss_auto found. Exiting."; exit 1; }
+
+          # Build colon-separated KISS_PATH from all repodirs in .kiss_auto
+          kiss_path=""
+          while IFS= read -r line; do
+            [ -z "$line" ] && continue
+            case "$line" in \#*) continue ;; esac
+            repodir="${line%%,*}"
+            abs="${GITHUB_WORKSPACE}/${repodir}"
+            if [ -z "$kiss_path" ]; then
+              kiss_path="$abs"
+            else
+              kiss_path="${kiss_path}:${abs}"
+            fi
+          done < .kiss_auto
+
+          echo "KISS_PATH=$kiss_path" >> "$GITHUB_ENV"
+          echo "Built KISS_PATH: $kiss_path"
+
       - name: Run KISS Auto Updater
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          KISS_PATH: ${{ github.workspace }}
-          # Say yes to any kiss prompts
           KISS_PROMPT: "0"
         run: |
           set -u
 
-          # Ensure the config file exists
-          [ -e ".kiss_auto" ] || { echo "No .kiss_auto found. Exiting."; exit 1; }
-
           git checkout master
 
           sort -u ".kiss_auto" | while read -r LINE; do
-            # Skip empty lines and comments
             [ -z "$LINE" ] && continue
             case "$LINE" in \#*) continue ;; esac
 
-            # Parse repository directory and packages whitelist
             repodir="${LINE%%,*}"
             pkgs="${LINE##*,}"
 
-            # Convert space-separated packages into a regex list (pkg1|pkg2|pkg3)
             pkg_regex=$(echo "$pkgs" | sed 's/ /|/g')
 
-            # Fetch outdated packages and filter by our whitelist
             outdated_list=$(kiss-outdated "$repodir" | grep -E "^($pkg_regex) " || true)
 
-            # If no updates, move to next repo line
             [ -z "$outdated_list" ] && continue
 
             echo "$outdated_list" | while read -r PKG_LINE; do
-              # Parse kiss-outdated output: "pkgname oldver -> newver"
               pkg="${PKG_LINE%% *}"
               newver="${PKG_LINE##* }"
 
@@ -76,13 +84,11 @@ jobs:
 
               branch_name="update/${pkg}-${newver}"
 
-              # Skip if a PR already exists for this branch
               if gh pr list --state open --head "$branch_name" | grep -q "$branch_name"; then
                 echo "PR for $branch_name already exists. Skipping."
                 continue
               fi
 
-              # Fresh branch from master
               git checkout -b "$branch_name" origin/master
 
               cd "${repodir}/${pkg}"
@@ -96,15 +102,11 @@ jobs:
                 continue
               fi
 
-              # Bump version file
               echo "$newver 1" > version
 
-              # Bump version references in sources (literal-version style)
               if [ -f sources ]; then
-                # full version first (e.g. 3.0.1 -> 3.0.2)
                 sed -i "s|${oldver}|${newver}|g" sources
 
-                # major.minor path component (e.g. /4.12/ -> /4.14/)
                 old_mm="${oldver%.*}"
                 new_mm="${newver%.*}"
                 if [ "$old_mm" != "$new_mm" ] && [ "$old_mm" != "$oldver" ]; then
@@ -112,7 +114,6 @@ jobs:
                 fi
               fi
 
-              # Try to fetch new sources + regenerate checksums
               if kiss download "$pkg" && kiss checksum "$pkg"; then
                 git add .
                 git commit -m "CI: $pkg: bump to $newver"
@@ -127,7 +128,6 @@ jobs:
                 echo "==> Failed to download/checksum $pkg $newver. Skipping."
               fi
 
-              # Reset for the next package
               cd "${GITHUB_WORKSPACE}"
               git reset --hard
               git checkout master
