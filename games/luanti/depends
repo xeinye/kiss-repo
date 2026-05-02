@@ -1,0 +1,15 @@
+cmake make
+llvm make
+zstd
+curl
+freetype-harfbuzz
+gmp
+libjpeg-turbo
+libogg
+libpng
+libvorbis
+mesa
+openssl
+sdl2
+sqlite
+zlib

@@ -29,6 +29,7 @@ meson setup \
     -Dcpp_rtti=false \
     -Dvideo-codecs=vc1dec,h264dec,h264enc,h265dec,h265enc \
     -Dvulkan-drivers='' \
+    -Dllvm=enabled \
     -Dcpp_link_args='-fuse-ld=lld -lc++abi' \
     output
 

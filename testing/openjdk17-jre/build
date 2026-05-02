@@ -1,0 +1,21 @@
+#!/bin/sh -e
+# Instala o JRE 17 (binario musl/Alpine) no diretorio destino.
+# O KISS ja remove o componente raiz do tarball antes de executar este script.
+#
+# $1 = DESTDIR   $2 = versao
+
+jvmdir="$1/usr/lib/jvm/java-17-openjdk"
+install -d "$jvmdir"
+
+cp -a . "$jvmdir/"
+
+# Remove man pages
+rm -rf "$jvmdir/man"
+
+# Cria symlinks versionados em /usr/bin
+install -d "$1/usr/bin"
+for bin in java keytool rmiregistry; do
+    [ -f "$jvmdir/bin/$bin" ] && \
+        ln -sf "/usr/lib/jvm/java-17-openjdk/bin/$bin" \
+               "$1/usr/bin/${bin}17"
+done

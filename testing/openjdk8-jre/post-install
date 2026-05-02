@@ -1,0 +1,15 @@
+#!/bin/sh -e
+cat <<'MSG'
+
+  OpenJDK 8 JRE instalado em /usr/lib/jvm/java-8-openjdk/
+
+  Executaveis disponiveis com sufixo '8':
+    java8, keytool8, rmiregistry8, etc.
+
+  Para definir como java padrao do sistema:
+    kiss a openjdk8-jre /usr/bin/java /usr/lib/jvm/java-8-openjdk/bin/java
+
+  ATENCAO: Este binario e linkedado com glibc.
+  O pacote 'gcompat' deve estar instalado para funcionar no KISS (musl).
+
+MSG
