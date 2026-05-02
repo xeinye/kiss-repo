@@ -1,0 +1,17 @@
+libXau
+libXext
+libXfont2
+libdrm
+libepoxy
+libxcvt
+libxkbfile
+libxshmfence
+mesa
+meson make
+openssl
+pixman
+wayland
+wayland-protocols make
+xkbcomp
+xorgproto make
+xtrans make
