@@ -1,0 +1,14 @@
+#!/bin/sh -e
+export DESTDIR="$1"
+
+cmake -B build \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DOPENGL_USE_EGL=TRUE \
+    -DENABLE_GLES2=ON \
+    -DENABLE_OPENGL=OFF \
+    -DBUILD_SERVER=OFF \
+    .
+
+cmake --build build
+cmake --install build

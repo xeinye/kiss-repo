@@ -1,0 +1,16 @@
+#!/bin/sh -e
+
+export DESTDIR="$1"
+
+cmake -B build \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DBUILD_SHARED_LIBS=ON \
+    -DGLFW_BUILD_WAYLAND=ON \
+    -DGLFW_BUILD_X11=OFF \
+    -DGLFW_BUILD_EXAMPLES=OFF \
+    -DGLFW_BUILD_TESTS=OFF \
+    -DGLFW_BUILD_DOCS=OFF \
+
+cmake --build   build
+cmake --install build
