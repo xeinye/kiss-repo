@@ -1,0 +1,12 @@
+#!/bin/sh -e
+./configure \
+    --prefix=/usr \
+    --disable-rpath \
+    --disable-video-x11 \
+    --disable-video-opengl \
+    --enable-video-opengles \
+    --enable-video-wayland \
+    --enable-wayland-shared=no \
+
+make
+make DESTDIR="$1" install

@@ -1,0 +1,3 @@
+# Eclipse Temurin JRE 8 - x86_64 linux (glibc)
+# NOTA: JDK 8 nao possui build musl oficial; requer gcompat no KISS (musl)
+https://github.com/adoptium/temurin8-binaries/releases/download/jdk8u482-b08/OpenJDK8U-jre_x64_linux_hotspot_8u482b08.tar.gz

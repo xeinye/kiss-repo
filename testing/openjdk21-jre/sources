@@ -1,0 +1,3 @@
+# Eclipse Temurin JRE 21 - x86_64 alpine-linux (musl)
+# Build nativo musl: compativel com KISS Linux sem necessidade de gcompat
+https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.11%2B10/OpenJDK21U-jre_x64_alpine-linux_hotspot_21.0.11_10.tar.gz
