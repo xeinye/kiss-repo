@@ -1,0 +1,77 @@
+From e25fa04fb50b1c3fc041aee4deb4847ac5e1a865 Mon Sep 17 00:00:00 2001
+From: aniruddhgutta <aniruddhgutta@disroot.org>
+Date: Fri, 17 Oct 2025 13:43:49 +0530
+Subject: [PATCH] fix-UB
+
+---
+ coreutils/test.c | 2 +-
+ include/libbb.h  | 4 ++--
+ libbb/lineedit.c | 2 +-
+ shell/ash.c      | 2 ++
+ 4 files changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/coreutils/test.c b/coreutils/test.c
+index 008d90b..ae97b29 100644
+--- a/coreutils/test.c
++++ b/coreutils/test.c
+@@ -435,7 +435,7 @@ struct test_statics {
+ };
+ 
+ /* See test_ptr_hack.c */
+-extern struct test_statics *BB_GLOBAL_CONST test_ptr_to_statics;
++extern struct test_statics *test_ptr_to_statics;
+ 
+ #define S (*test_ptr_to_statics)
+ #define args            (S.args         )
+diff --git a/include/libbb.h b/include/libbb.h
+index 01cdb1b..d742ad6 100644
+--- a/include/libbb.h
++++ b/include/libbb.h
+@@ -386,7 +386,7 @@ struct BUG_off_t_size_is_misdetected {
+ #if defined(errno)
+ /* If errno is a define, assume it's "define errno (*__errno_location())"
+  * and we will cache it's result in this variable */
+-extern int *BB_GLOBAL_CONST bb_errno;
++extern int *bb_errno;
+ # undef errno
+ # define errno (*bb_errno)
+ # define bb_cached_errno_ptr 1
+@@ -2318,7 +2318,7 @@ struct globals;
+ /* '*const' ptr makes gcc optimize code much better.
+  * Magic prevents ptr_to_globals from going into rodata.
+  * If you want to assign a value, use SET_PTR_TO_GLOBALS(x) */
+-extern struct globals *BB_GLOBAL_CONST ptr_to_globals;
++extern struct globals *ptr_to_globals;
+ 
+ #define barrier() asm volatile ("":::"memory")
+ 
+diff --git a/libbb/lineedit.c b/libbb/lineedit.c
+index 543a3f1..a1b8ce4 100644
+--- a/libbb/lineedit.c
++++ b/libbb/lineedit.c
+@@ -189,7 +189,7 @@ struct lineedit_statics {
+ };
+ 
+ /* See lineedit_ptr_hack.c */
+-extern struct lineedit_statics *BB_GLOBAL_CONST lineedit_ptr_to_statics;
++extern struct lineedit_statics * lineedit_ptr_to_statics;
+ 
+ #define S (*lineedit_ptr_to_statics)
+ #define state            (S.state           )
+diff --git a/shell/ash.c b/shell/ash.c
+index bbd7307..19265b8 100644
+--- a/shell/ash.c
++++ b/shell/ash.c
+@@ -319,6 +319,8 @@ typedef long arith_t;
+ #if !BB_MMU
+ # error "Do not even bother, ash will not run on NOMMU machine"
+ #endif
++#undef BB_GLOBAL_CONST
++#define BB_GLOBAL_CONST
+ 
+ /* ============ Hash table sizes. Configurable. */
+ 
+-- 
+2.51.0
+
+
