@@ -1,3 +1,0 @@
-# Binario glibc requer camada de compatibilidade no KISS musl
-gcompat
-zlib
