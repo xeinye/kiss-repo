@@ -2,7 +2,6 @@
 |\ISS LINUX                                          https://kisslinux.github.io
 ________________________________________________________________________________
 
-
 Personal Repositories
 ________________________________________________________________________________
 
@@ -20,7 +19,4 @@ Software:
 - pigz instead of gzip
 - byacc instead of bison
 - llvm/clang instead of gcc/binutils
-
-/testing
-- muon instead of meson(experimental)
-  * Many packages broken
+- zlib-ng instead of zlib
