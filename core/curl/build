@@ -19,6 +19,7 @@ mv -f _ src/Makefile.in
     --with-openssl \
     --with-pic \
     --with-ca-fallback \
+    --disable-docs \
     --without-librtmp \
     --without-libpsl \
     --without-libidn2 \
@@ -28,5 +29,8 @@ mv -f _ src/Makefile.in
 make
 make DESTDIR="$1" install
 
-mkdir -p "$1/etc/ssl"
-cp cacert-2024-03-11.pem "$1/etc/ssl/cert.pem"
+
+(
+  mkdir -p "$1/etc/ssl"
+  cp cacert-*.pem "$1/etc/ssl/cert.pem"
+)
