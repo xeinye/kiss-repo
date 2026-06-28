@@ -27,3 +27,6 @@ mv -f _ src/Makefile.in
 
 make
 make DESTDIR="$1" install
+
+mkdir -p "$1/etc/ssl"
+cp cacert-2024-03-11.pem "$1/etc/ssl/cert.pem"
