@@ -1,2 +1,6 @@
 https://curl.se/download/curl-8.21.0.tar.xz
 https://curl.se/ca/cacert-2026-05-14.pem
+files/curl.1  
+files/curl-config.1	
+files/mk-ca-bundle.1	
+files/wcurl.1
