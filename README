@@ -15,7 +15,6 @@ ________________________________________________________________________________
 
 Software:
 - netbsd-curses instead of ncurses
-- reflex instead of flex
 - samurai instead of ninja
 - pigz instead of gzip
 - byacc instead of bison

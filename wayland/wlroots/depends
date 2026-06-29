@@ -1,4 +1,4 @@
-reflex make
+flex make
 hwdata make
 libdisplay-info
 libdrm
