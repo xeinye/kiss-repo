@@ -1,6 +1,6 @@
 byacc make
 expat
-flex make
+reflex make
 libclc make
 libdrm
 libelf
