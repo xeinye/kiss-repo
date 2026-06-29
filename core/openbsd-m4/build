@@ -1,0 +1,14 @@
+#!/bin/sh -e
+
+byacc -d parser.y
+cp y.tab.h parser.h
+
+flex -o tokenizer.c tokenizer.l
+
+${CC:-cc} ${CFLAGS} -DEXTENDED -I. \
+    eval.c expr.c look.c main.c misc.c gnum4.c trace.c \
+    tokenizer.c y.tab.c ohash.c \
+    -lm -o m4
+
+install -Dm755 m4        "$1/usr/bin/m4"
+install -Dm644 m4.1      "$1/usr/share/man/man1/m4.1"

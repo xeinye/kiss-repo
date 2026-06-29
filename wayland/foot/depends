@@ -2,7 +2,7 @@ fcft
 fontconfig
 libxkbcommon
 meson   make
-ncurses make
+netbsd-curses make
 pixman
 pkgconf make
 python  make

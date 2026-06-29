@@ -20,3 +20,4 @@ Software:
 - byacc instead of bison
 - llvm/clang instead of gcc/binutils
 - zlib-ng instead of zlib
+- opendoas instead of sudo/ssu

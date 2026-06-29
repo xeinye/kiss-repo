@@ -1,7 +1,7 @@
 bzip2
 expat
 libffi
-ncurses
+netbsd-curses
 openssl
 sqlite
 zlib
